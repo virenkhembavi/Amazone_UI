@@ -1,28 +1,36 @@
 import React from 'react'
 import './Home.css'
 import Product from './Product'
+import { connect } from "react-redux"
+import { fetchStoreData } from '../redux/reducer/storeReducer'
+import { useEffect } from 'react'
+// import { fetchStoreDataByCateg } from '../redux/reducer/catergoriesReducer
 
+function Home(props) {
+    const { fetchUsers, Data } = props
+    let storedData = Data.data
 
-function Home() {
+    useEffect(() => {
+        fetchUsers()
+    }, [])
+
     return (
         <div className="home">
             <div className="home-container">
-                <img className="home-Image" src="https://cdn.iphoneincanada.ca/wp-content/uploads/2018/04/amazon-prime-video.png" />
+                <img className="home-Image" src="https://cdn.iphoneincanada.ca/wp-content/uploads/2018/04/amazon-prime-video.png" alt="home-banner" />
             </div>
             <div className="home-row">
-                <Product id="001"
-                    title='The Dead Are Arising: The Life of Malcolm X'
-                    prize={29.10}
-                    image={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhm4CA53z6UZQ0pz9_DP49TiJpe31BrGStRQ&usqp=CAU'}
-                    rating={5}
-                />
-                <Product id="002"
-                    title='All-new Echo Dot (4th Gen) | Next generation smart speaker with improved bass and Alexa (Blue)'
-                    prize={300.00}
-                    image={'https://m.media-amazon.com/images/I/61MbLLagiVL._AC_UY218_.jpg'}
-                    rating={5}
-                />
-
+                {storedData?.map(item => {
+                    return (
+                        <Product id="001"
+                            key={item.id}
+                            title={item.title}
+                            prize={item.price}
+                            image={item.image}
+                            rating={5}
+                        />
+                    )
+                })}
             </div>
             <div className="home-row">
                 <Product id="003"
@@ -45,17 +53,28 @@ function Home() {
                 />
             </div>
             <div className="home-row">
-                <Product id="006"
-                    title='Honeytecs Smart Rings NFC Multifunctional Waterproof Intelligent Ring Smart Wear Finger Digital Ring Smart Accessories'
-                    prize={300.00}
-                    image={'https://m.media-amazon.com/images/I/61HWJLtlwUL._AC_UL320_.jpg'}
-                    rating={2}
-                />
+                {storedData?.map(item => (
+                    <Product id="001"
+                        title={item.title}
+                        prize={item.price}
+                        image={item.image}
+                        rating={5}
+                    />
+                ))}
             </div>
-
-
         </div>
     )
 }
 
-export default Home
+const mapStateToProps = state => {
+    return {
+        Data: state.storeData,
+    }
+}
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchUsers: () => dispatch(fetchStoreData()),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home)
